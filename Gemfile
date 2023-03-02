@@ -13,6 +13,9 @@ gem 'puma', '~> 4.1'
 # Auth
 gem "devise_token_auth", "~> 1.1.4"
 
+# CORS
+gem "rack-cors", "~> 1.1.1"
+
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.7'
 # Use Redis adapter to run Action Cable in production
