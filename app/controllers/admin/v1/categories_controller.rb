@@ -1,9 +1,9 @@
 module Admin::V1
   class CategoriesController < ApiController
-    before_action :load_category, only: [:update, :destroy]
+    before_action :load_category, only: %i[update destroy]
 
     def index
-      @categories = Category.all
+       @categories = load_categories
     end
 
     def create
@@ -20,7 +20,7 @@ module Admin::V1
 
     def destroy
       @category.destroy!
-    rescue
+    rescue StandardError
       render_error(fields: @category.errors.messages)
     end
 
@@ -30,15 +30,21 @@ module Admin::V1
       @category = Category.find(params[:id])
     end
 
+    def load_categories
+      permitted = params.permit({ search: :name }, { order: {} }, :page, :length)
+      Admin::ModelLoadingService.new(Category.all, permitted).call
+    end
+
     def category_params
       return {} unless params.has_key?(:category)
+
       params.require(:category).permit(:id, :name)
     end
 
     def save_category!
       @category.save!
       render :show
-    rescue
+    rescue StandardError
       render_error(fields: @category.errors.messages)
     end
   end
